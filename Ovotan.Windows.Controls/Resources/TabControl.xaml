@@ -1,0 +1,126 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:controls="clr-namespace:Ovotan.Windows.Controls"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style TargetType="{x:Type controls:TabHeader}">
+        <Setter Property="BorderBrush" Value="Green"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:TabHeader}">
+                    <ControlTemplate.Resources>
+                        <SolidColorBrush x:Key="BorderBrush">#3B4F81</SolidColorBrush>
+                        <SolidColorBrush x:Key="MouseOverClose">Black</SolidColorBrush>
+                    </ControlTemplate.Resources>
+                    <Border SnapsToDevicePixels="True" x:Name="Border" TextBlock.Foreground="#F4F5FF" BorderThickness="1" 
+                                Padding="3,0,3,2" BorderBrush="{StaticResource BorderBrush}" Background="{StaticResource BorderBrush}">
+                        <DockPanel x:Name="DockPanel" Margin="0"  VerticalAlignment="Center" HorizontalAlignment="Stretch">
+
+                            <TextBlock Text="{Binding Header}"/>
+                            <Rectangle Width="9" Height="9" Margin="5,3,2,0" x:Name="CloseButton" >
+                                <Rectangle.Resources>
+
+                                </Rectangle.Resources>
+                                <Rectangle.Fill>
+                                    <DrawingBrush>
+                                        <DrawingBrush.Drawing>
+                                            <DrawingGroup>
+                                                <GeometryDrawing x:Name="CloseGeometry" Brush="{StaticResource BorderBrush}" Geometry="F1M8.207,7.5l5.147,5.146-.708.708L7.5,8.207,2.354,13.354l-.708-.708L6.793,7.5,1.646,2.354l.708-.708L7.5,6.793l5.146-5.147.708.708Z">
+
+                                                </GeometryDrawing>
+                                            </DrawingGroup>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Rectangle.Fill>
+
+                            </Rectangle>
+
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsActive" Value="False"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter TargetName="Border" Property="Background" Value="#BBC6F1"/>
+                                <Setter TargetName="Border" Property="TextBlock.Foreground" Value="Black"/>
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
+                        <Trigger Property="IsActive" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="#F5CC84"/>
+                            <Setter TargetName="Border" Property="TextBlock.Foreground" Value="Black"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+
+    <Style TargetType="{x:Type controls:TabHeaders}">
+        <Style.Resources>
+            <SolidColorBrush x:Key="ToolBarBackground">#CCD5F0</SolidColorBrush>
+            <SolidColorBrush x:Key="ToggleButtonMouseOverBackground">#FFFFFF</SolidColorBrush>
+            <SolidColorBrush x:Key="ToggleButtonArrowFill">#D9E0F8</SolidColorBrush>
+            <SolidColorBrush x:Key="ToggleButtonListBorder">#94A6CA</SolidColorBrush>
+            <SolidColorBrush x:Key="ToggleButtonListBackground">#E9EEFF</SolidColorBrush>
+            <Style TargetType="{x:Type Menu}">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="Red"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Style.Resources>
+        <Setter Property="Background" Value="Red"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:TabHeaders}">
+                    <ControlTemplate.Resources>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Margin" Value="0,0,1,0"/>
+                            <Setter Property="Background" Value="#3B4F81"/>
+                        </Style>
+                    </ControlTemplate.Resources>
+                    <Grid Background="{TemplateBinding Background}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Canvas x:Name="Canvas" VerticalAlignment="Stretch" ></Canvas>
+
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0">
+                            <Menu VerticalAlignment="Bottom" x:Name="ActionMenu" Grid.Column="1" Grid.Row="0" Background="Transparent">
+                                <MenuItem x:Name="DocumentDropDownList"  Width="15" BorderThickness="0" Background="Transparent">
+                                    <MenuItem.Icon>
+                                        <Path x:Name="Arrow" Margin="0,0,3,5" Fill="{StaticResource ToggleButtonArrowFill}" VerticalAlignment="Bottom" Data="M-0.5 3 L6.8 3 L2.8 8 Z" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem  Padding="0" BorderThickness="0">
+                                    <MenuItem.Header>
+                                        <controls:ViewboxIcon 
+                                            FirstColor="#D5DCF5" SecondColor="#D5DCF5"
+                                            MouseOverFirstColor="White" MouseOverSecondColor="White"
+                                            Width="12" Height="12" Viewbox="{DynamicResource OVBT_Settings}"></controls:ViewboxIcon>
+                                    </MenuItem.Header>
+                                    <MenuItem  
+                                              IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay,Path=IsMultiRows}"
+                                              IsCheckable="True" Header="Показывать вкладки в нескольких строках"/>
+                                </MenuItem>
+
+                            </Menu>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+</ResourceDictionary>

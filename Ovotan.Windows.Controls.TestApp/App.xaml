@@ -1,0 +1,10 @@
+<Application x:Class="Ovotan.Windows.Controls.TestApp.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Ovotan.Windows.Controls.TestApp"
+             xmlns:controls="clr-namespace:Ovotan.Windows.Controls;assembly=Ovotan.Windows.Controls"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <controls:SchemaManager DefaultSchemaName="Blue"/>
+    </Application.Resources>
+</Application>
