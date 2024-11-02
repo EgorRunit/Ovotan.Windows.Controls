@@ -77,6 +77,25 @@
         </Rectangle>
     </Viewbox>
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     <Viewbox x:Shared="false" x:Key="OVBT_Connection" Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:System="clr-namespace:System;assembly=mscorlib">
         <Rectangle Width="16" Height="16">
