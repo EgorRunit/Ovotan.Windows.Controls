@@ -1,12 +1,11 @@
 using Ovotan.Windows.Controls.Controls;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Ovotan.Windows.Controls
 {
-    public class TabHeaders : ContentControl
+    public class TabHeaders : Panel
     {
         ICommand _removeHeaderCommand;
         Menu _actionMenu;
@@ -15,49 +14,15 @@ namespace Ovotan.Windows.Controls
         /// Previously selected header.
         /// </summary>
         TabHeader _previouslySelectedHeader;
-        public static DependencyProperty IsMultiRowsProperty;
-        public static DependencyProperty HeadersProperty;
-        public static DependencyProperty HasOverflowItemsProperty;
+        bool _isMultiRows;
 
-        /// <summary>
-        /// get,set - It has overflow headers.
-        /// </summary>
-        public bool HasOverflowItems
-        {
-            get { return (bool)GetValue(HasOverflowItemsProperty); }
-            set { SetValue(HasOverflowItemsProperty, value); }
-        }
-
-        /// <summary>
-        /// get,set - Displaying mode for headers.
-        /// </summary>
-        public bool IsMultiRows
-        {
-            get { return (bool)GetValue(IsMultiRowsProperty); }
-            set { SetValue(IsMultiRowsProperty, value); }
-        }
-
-        /// <summary>
-        /// get,set - Collection for headers.
-        /// </summary>
-        public ObservableCollection<TabHeader> Headers
-        {
-            get { return GetValue(HeadersProperty) as ObservableCollection<TabHeader>; }
-            set { SetValue(HeadersProperty, value); }
-        }
 
         /// <summary>
         /// Constructor.
         /// </summary>
         static TabHeaders()
-        {
+        { 
             DefaultStyleKeyProperty.OverrideMetadata(typeof(TabHeaders), new FrameworkPropertyMetadata(typeof(TabHeaders)));
-            HasOverflowItemsProperty = DependencyProperty.Register("HasOverflowItems", typeof(bool), typeof(TabHeaders),
-                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, null, null));
-            HeadersProperty = DependencyProperty.Register("Headers", typeof(ObservableCollection<TabHeader>), typeof(TabHeaders),
-                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, null, null));
-            IsMultiRowsProperty = DependencyProperty.Register("IsMultiRows", typeof(bool), typeof(TabHeaders),
-             new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, _isMultiRowChangedHandler, null));
             SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls;component/Resources/TabControl.xaml", "");
         }
 
@@ -66,169 +31,105 @@ namespace Ovotan.Windows.Controls
         /// </summary>
         public TabHeaders()
         {
-            Headers = new ObservableCollection<TabHeader>();
             MouseDown += _mouseDownHandler;
             _removeHeaderCommand = new ButtonCommand<TabHeader>((x) => _removeHeader(x));
         }
 
         public void AddHeader(TabHeader header)
         {
-            Headers.Add(header);
-            header.IsActive = true;
-            _canvas.Children.Add(header);
+            Children.Insert(0,header);
             _setActiveTab(header);
         }
 
-        public override void OnApplyTemplate()
+        public void SetActive(TabHeader tabHeader)
         {
-            base.OnApplyTemplate();
-            _canvas = Template.FindName("Canvas", this) as Canvas;
-            _actionMenu = Template.FindName("ActionMenu", this) as Menu;
-
-            var dropDownListElements = _actionMenu.Items[0] as MenuItem;
-            dropDownListElements.ItemsSource = new List<int>() { 4 };
-            dropDownListElements.SubmenuOpened += (d, f) =>
-            {
-                var elements = Headers.Select(x => new MenuItem()
-                {
-                    Header = x.Header,
-                    Tag = x,
-                    Command = new ButtonCommand<TabHeader>(x => _setActiveTab(x)),
-                    CommandParameter = x
-                }).ToList();
-                dropDownListElements.ItemsSource = elements;
-            };
-            foreach (var element in Headers)
-            {
-                //element.DataContext = this;
-                _canvas.Children.Add(element);
-            }
+            _setActiveTab(tabHeader);
         }
 
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
-            arrangeBounds.Height = 21.96;
+            var left = 0.0;
+            var top = 0.0;
+            var height = 0.0;
+            if (Children.Count > 0)
+            {
+                var firstHeader = Children[0];
+                height = firstHeader.DesiredSize.Height;
+                if (!_isMultiRows)
+                {
+                    for (var i = 0; i < Children.Count; i++)
+                    {
+                        var header = Children[i] as TabHeader;
+                        if (left != 0 && left + header.DesiredSize.Width + 2 > arrangeBounds.Width)
+                        {
+                            //header.Arrange(new Rect(0, 0, 0, 0));
+                        }
+                        else
+                        {
+                            header.Rect = new Rect(left, top, header.DesiredSize.Width, header.DesiredSize.Height);
+                            header.Arrange(header.Rect);
+                            arrangeBounds.Height = header.DesiredSize.Height + 2;
+                        }
+                        left += header.DesiredSize.Width + 2;
+                    }
+                }
+                else
+                {
+                    for (var i = 0; i < Children.Count; i++)
+                    {
+                        var header = Children[i];
+                        if (left != 0 && left + header.DesiredSize.Width + 2 > arrangeBounds.Width)
+                        {
+                            left = 0;
+                            top += header.DesiredSize.Height + 2;
+                        }
+                        header.Arrange(new Rect(left, top, header.DesiredSize.Width, header.DesiredSize.Height));
+                        left += header.DesiredSize.Width + 2;
+                    }
+                }
+                arrangeBounds.Height = top + height;
+            }
+            Height = arrangeBounds.Height;
             return base.ArrangeOverride(new Size(arrangeBounds.Width, arrangeBounds.Height));
         }
 
         protected override Size MeasureOverride(Size constraint)
         {
-            if (Headers.Count > 0)
+            var left = 0.0;
+            var top = 0.0;
+            var height = 0.0; 
+            if (Children.Count > 0)
             {
-                if (IsMultiRows)
+                var firstHeader = Children[0];
+                firstHeader.Measure(constraint);
+                height = firstHeader.DesiredSize.Height;
+                for (var i = 0; i < Children.Count; i++)
                 {
-                    _renderTabsInMultipleRows(constraint);
+                    var header = Children[i] as TabHeader;
+                    if (header != null)
+                    {
+                        header.Measure(constraint);
+                        if (!_isMultiRows)
+                        {
+                            left += header.DesiredSize.Width + 2;
+                        }
+                        else
+                        {
+                            if (left != 0 && left + header.DesiredSize.Width + 2 > constraint.Width)
+                            {
+                                left = 0;
+                                top += header.DesiredSize.Height + 2;
+                            }
+                            left += header.DesiredSize.Width + 2;
+                        }
+                    }
+                    header.RemoveCommand = _removeHeaderCommand;
                 }
-                else
-                {
-                    _renderTabsInSingleRow(constraint);
-                }
-                constraint.Height = Height;
+                constraint.Height = height + top;
             }
-            else if (ActualHeight == 0)
-            {
-                var tempHeader = new TabHeader() { Header = "T" };
-                _canvas.Children.Add(tempHeader);
-                var size = new Size(double.PositiveInfinity, double.PositiveInfinity);
-                tempHeader.Measure(size);
-                _canvas.Children.Clear();
-                Height = tempHeader.DesiredSize.Height + 2;
-                constraint.Height = Height;
-            }
-
-            //this.Measure(constraint);
             return base.MeasureOverride(new Size(constraint.Width, constraint.Height));
+
         }
-
-
-        /// <summary>
-        /// Displaying tabs in multiple row.
-        /// </summary>
-        /// <param name="constraint">Size of content.</param>
-        void _renderTabsInMultipleRows(Size constraint)
-        {
-            var size = new Size(double.PositiveInfinity, double.PositiveInfinity);
-            var actionMenuWidth = _actionMenu.ActualWidth;
-            if (actionMenuWidth == 0.0)
-            {
-                _actionMenu.Measure(size);
-                actionMenuWidth = _actionMenu.DesiredSize.Width;
-            }
-            var actualWidth = constraint.Width;
-            var left = 0.0;
-            var top = 0.0;
-            var height = 0.0;
-            foreach (var element in Headers)
-            {
-                element.Measure(size);
-                height = element.DesiredSize.Height;
-                var width = element.DesiredSize.Width;
-                if (left + width + actionMenuWidth > actualWidth)
-                {
-                    top += element.ActualHeight + 2;
-                    left = 0;
-                }
-                //element.Visibility = Visibility.Visible;
-                //element.SetValue(Canvas.LeftProperty, left);
-                //element.SetValue(Canvas.TopProperty, top);
-                //element.RemoveCommand = _removeHeaderCommand;
-                left += width + 2;
-            }
-
-            SetValue(HeightProperty, top + height + 2);
-            //Height = top + height + 2;
-            if (HasOverflowItems)
-            {
-                HasOverflowItems = false;
-            }
-        }
-
-
-        /// <summary>
-        /// Displaying tabs in one row.
-        /// </summary>
-        /// <param name="constraint">Size of content.</param>
-        void _renderTabsInSingleRow(Size constraint)
-        {
-            var size = new Size(double.PositiveInfinity, double.PositiveInfinity);
-            var actionMenuWidth = _actionMenu.ActualWidth;
-            if (actionMenuWidth == 0.0)
-            {
-                _actionMenu.Measure(size);
-                actionMenuWidth = _actionMenu.DesiredSize.Width;
-            }
-            var actualWidth = constraint.Width;
-            var left = 0.0;
-            var top = 0.0;
-            var hasOverflowItems = false;
-            var height = 0.0;
-            foreach (var element in Headers)
-            {
-                element.Measure(size);
-                height = element.DesiredSize.Height;
-                var width = element.DesiredSize.Width;
-                if (left + width + actionMenuWidth > actualWidth)
-                {
-                    hasOverflowItems = true;
-                    element.Visibility = Visibility.Hidden;
-                }
-                else
-                {
-                    //element.Visibility = Visibility.Visible;
-                    //element.SetValue(Canvas.LeftProperty, left);
-                    //element.SetValue(Canvas.TopProperty, top);
-                }
-                element.RemoveCommand = _removeHeaderCommand;
-                left += width + 2;
-            }
-
-            Height = height + 2;
-            if (HasOverflowItems != hasOverflowItems)
-            {
-                HasOverflowItems = hasOverflowItems;
-            }
-        }
-
 
         /// <summary>
         /// Set active header.
@@ -242,29 +143,32 @@ namespace Ovotan.Windows.Controls
             }
             _previouslySelectedHeader = item;
             _previouslySelectedHeader.IsActive = true;
-            var documentLeftPosition = (double)item.GetValue(Canvas.LeftProperty);
-            if (documentLeftPosition + item.ActualWidth > ActualWidth)
-            {
-                var left = 0.0;
-                for (var i = 0; i < Headers.Count; i++)
-                {
-                    var document = Headers[i];
-                    if (left + document.ActualWidth > ActualWidth)
-                    {
-                        //stop
-                        if (i > 0)
-                        {
-                            i--;
-                        }
-                        var documentIndex = Headers.IndexOf(item);
-                        Headers[documentIndex] = Headers[i];
-                        Headers[i] = item;
-                        break;
-                    }
-                    left += document.ActualWidth + 2;
-                }
-            }
-            MeasureOverride(new Size(ActualWidth, ActualHeight));
+            return;
+            //var point = new Point();
+            //var ssds = this.TranslatePoint(point, Children[0]);
+            //var ssds1 = Children[0].GetValue(Canvas.LeftProperty);
+            //var documentLeftPosition = (double)item.GetValue(Canvas.LeftProperty);
+            //if (documentLeftPosition + item.ActualWidth > ActualWidth)
+            //{
+            //    var left = 0.0;
+            //    for (var i = 0; i <Children.Count; i++)
+            //    {
+            //        var document = Children[i] as TabHeader;
+            //        if (left + document.ActualWidth > ActualWidth && document != null)
+            //        {
+            //            if (i > 0)
+            //            {
+            //                i--;
+            //            }
+            //            var documentIndex = Children.IndexOf(item);
+            //            Children[documentIndex] = Children[i];
+            //            Children[i] = item;
+            //            break;
+            //        }
+            //        left += document.ActualWidth + 2;
+            //    }
+            //    MeasureOverride(new Size(ActualWidth, ActualHeight));
+            //}
         }
 
         /// <summary>
@@ -285,35 +189,32 @@ namespace Ovotan.Windows.Controls
         /// <param name="item">Еhe header is being deleted.</param>
         void _removeHeader(TabHeader item)
         {
-            var headerIndex = Headers.IndexOf(item);
-            Headers.Remove(item);
-            _canvas.Children.Remove(item);
-            if (Headers.Count > 0 && item.IsActive)
+            var headerIndex = Children.IndexOf(item);
+            Children.Remove(item);
+            if (Children.Count > 0 && item.IsActive)
             {
-                TabHeader newActiveSiteHostTabControlItem = null;
-                if (headerIndex < Headers.Count)
+                UIElement newActiveSiteHostTabControlItem = null;
+                if (headerIndex < Children.Count)
                 {
-                    newActiveSiteHostTabControlItem = Headers[headerIndex];
+                    newActiveSiteHostTabControlItem = Children[headerIndex];
                 }
                 else
                 {
-                    newActiveSiteHostTabControlItem = Headers[headerIndex - 1];
+                    newActiveSiteHostTabControlItem = Children[headerIndex - 1];
                 }
-                newActiveSiteHostTabControlItem.IsActive = true;
+                if (newActiveSiteHostTabControlItem is TabHeader)
+                {
+                    _previouslySelectedHeader = newActiveSiteHostTabControlItem as TabHeader;
+                    _previouslySelectedHeader.IsActive = true;
+                }
             }
             InvalidateMeasure();
         }
 
-        /// <summary>
-        /// handler for changing the tab display mode
-        /// </summary>
-        static void _isMultiRowChangedHandler(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        public void SetMultiRows(bool isMultiRows)
         {
-            var self = d as TabHeaders;
-            if (self.ActualWidth > 0)
-            {
-                self.MeasureOverride(new Size(self.ActualWidth, self.ActualHeight));
-            }
+            _isMultiRows = isMultiRows;
+            InvalidateMeasure();
         }
     }
 }

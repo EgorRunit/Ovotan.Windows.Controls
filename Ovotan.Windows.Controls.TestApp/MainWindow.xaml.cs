@@ -23,13 +23,8 @@ namespace Ovotan.Windows.Controls.TestApp
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MainHeaders.Background = new SolidColorBrush(Colors.Blue);
-        }
-        static int _index = 1;
-        void _addHeader(object sender, RoutedEventArgs e)
-        {
-            MainHeaders.AddHeader(new TabHeader() { Header = "Header - " + _index });
-            _index++;
+            var tab = new TabHeader() { Header = "eeeee" };
+            MainTabControl.AddTab(tab);
         }
     }
 }
