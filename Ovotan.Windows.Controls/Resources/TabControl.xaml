@@ -25,32 +25,8 @@
                                 Background="{TemplateBinding Background}">
                         <DockPanel Margin="0"  VerticalAlignment="Center" HorizontalAlignment="Stretch">
                             <TextBlock Text="{Binding Header}"/>
-                            <Rectangle Width="9" Height="9" Margin="5,3,2,0" x:Name="CloseButton">
-                                <Rectangle.Fill>
-                                    <DrawingBrush>
-                                        <DrawingBrush.Drawing>
-                                            <DrawingGroup>
-                                                <GeometryDrawing x:Name="CloseGeometry" Brush="Green" 
-                                                    Geometry="F1M8.207,7.5l5.147,5.146-.708.708L7.5,8.207,2.354,13.354l-.708-.708L6.793,7.5,1.646,2.354l.708-.708L7.5,6.793l5.146-5.147.708.708Z"/>
-                                            </DrawingGroup>
-                                        </DrawingBrush.Drawing>
-                                    </DrawingBrush>
-                                </Rectangle.Fill>
-                                <Rectangle.Triggers>
-                                    <EventTrigger RoutedEvent="Rectangle.MouseEnter">
-                                        <EventTrigger.Actions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <ColorAnimation From="Black" To="Red" AccelerationRatio="1" 
-                                                                    AutoReverse="False" 
-                      Duration="0:0:1" 
-                                                                    Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"/>
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </EventTrigger.Actions>
-                                    </EventTrigger>
-                                </Rectangle.Triggers>
-                            </Rectangle>
+                            <controls:ViewboxIcon Opacity="0.8" SnapsToDevicePixels="False" x:Name="ViewBoxIcon" Visibility="Hidden" 
+                                Margin="3,3,0,0" Width="12" Height="12" Viewbox="{DynamicResource OVBT_Close}"/>
                         </DockPanel>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -63,12 +39,16 @@
                                 <Setter Property="Background" Value="{Binding MouseOverBackground}"/>
                                 <Setter Property="BorderBrush" Value="{Binding MouseOverBorderBrush}"/>
                                 <Setter Property="TextBlock.Foreground" Value="{Binding MouseOverForeground}"/>
+                                <Setter TargetName="ViewBoxIcon" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="ViewBoxIcon" Property="BaseColor" Value="#40568D"/>
                             </MultiTrigger.Setters>
                         </MultiTrigger>
                         <Trigger Property="IsActive" Value="True">
                             <Setter Property="Background" Value="{Binding ActiveBackground}"/>
                             <Setter Property="BorderBrush" Value="{Binding ActiveBorderBrush}"/>
                             <Setter Property="TextBlock.Foreground" Value="{Binding ActiveForeground}"/>
+                            <Setter TargetName="ViewBoxIcon" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="ViewBoxIcon" Property="BaseColor" Value="#744B23"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -113,26 +93,28 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Canvas x:Name="Canvas" VerticalAlignment="Stretch" ></Canvas>
-
                         <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0">
                             <Menu VerticalAlignment="Bottom" x:Name="ActionMenu" Grid.Column="1" Grid.Row="0" Background="Transparent">
-                                <MenuItem x:Name="DocumentDropDownList"  Width="15" BorderThickness="0" Background="Transparent">
-                                    <MenuItem.Icon>
-                                        <Path x:Name="Arrow" Margin="0,0,3,5" Fill="{StaticResource ToggleButtonArrowFill}" VerticalAlignment="Bottom" Data="M-0.5 3 L6.8 3 L2.8 8 Z" />
-                                    </MenuItem.Icon>
+
+                                <MenuItem x:Name="DocumentDropDownList" BorderThickness="0" Padding="0">
+                                    <MenuItem.Header>
+                                        <controls:ViewboxIcon 
+                                            Width="12" Height="12" Opacity="0.8"
+                                            BaseColor="White"
+                                            Viewbox="{DynamicResource OVBT_Close1}"></controls:ViewboxIcon>
+                                    </MenuItem.Header>
                                 </MenuItem>
                                 <MenuItem  Padding="0" BorderThickness="0">
                                     <MenuItem.Header>
                                         <controls:ViewboxIcon 
-                                            FirstColor="#D5DCF5" SecondColor="#D5DCF5"
-                                            MouseOverFirstColor="White" MouseOverSecondColor="White"
-                                            Width="12" Height="12" Viewbox="{DynamicResource OVBT_Settings}"></controls:ViewboxIcon>
+                                            Width="12" Height="12" Opacity="0.8"
+                                            BaseColor="White"
+                                            Viewbox="{DynamicResource OVBT_Settings}"></controls:ViewboxIcon>
                                     </MenuItem.Header>
-                                    <MenuItem  
+                                    <MenuItem 
                                               IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay,Path=IsMultiRows}"
                                               IsCheckable="True" Header="Показывать вкладки в нескольких строках"/>
                                 </MenuItem>
-
                             </Menu>
                         </StackPanel>
                     </Grid>

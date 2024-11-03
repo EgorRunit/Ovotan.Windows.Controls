@@ -1,5 +1,4 @@
 using Ovotan.Windows.Controls.Controls;
-using Ovotan.Windows.Controls.Docking;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -101,9 +100,15 @@ namespace Ovotan.Windows.Controls
             };
             foreach (var element in Headers)
             {
-                element.DataContext = this;
+                //element.DataContext = this;
                 _canvas.Children.Add(element);
             }
+        }
+
+        protected override Size ArrangeOverride(Size arrangeBounds)
+        {
+            arrangeBounds.Height = 21.96;
+            return base.ArrangeOverride(new Size(arrangeBounds.Width, arrangeBounds.Height));
         }
 
         protected override Size MeasureOverride(Size constraint)
@@ -131,7 +136,8 @@ namespace Ovotan.Windows.Controls
                 constraint.Height = Height;
             }
 
-            return base.MeasureOverride(constraint);
+            //this.Measure(constraint);
+            return base.MeasureOverride(new Size(constraint.Width, constraint.Height));
         }
 
 
@@ -162,14 +168,15 @@ namespace Ovotan.Windows.Controls
                     top += element.ActualHeight + 2;
                     left = 0;
                 }
-                element.Visibility = Visibility.Visible;
-                element.SetValue(Canvas.LeftProperty, left);
-                element.SetValue(Canvas.TopProperty, top);
-                element.RemoveCommand = _removeHeaderCommand;
+                //element.Visibility = Visibility.Visible;
+                //element.SetValue(Canvas.LeftProperty, left);
+                //element.SetValue(Canvas.TopProperty, top);
+                //element.RemoveCommand = _removeHeaderCommand;
                 left += width + 2;
             }
 
-            Height = top + height + 2;
+            SetValue(HeightProperty, top + height + 2);
+            //Height = top + height + 2;
             if (HasOverflowItems)
             {
                 HasOverflowItems = false;
@@ -207,9 +214,9 @@ namespace Ovotan.Windows.Controls
                 }
                 else
                 {
-                    element.Visibility = Visibility.Visible;
-                    element.SetValue(Canvas.LeftProperty, left);
-                    element.SetValue(Canvas.TopProperty, top);
+                    //element.Visibility = Visibility.Visible;
+                    //element.SetValue(Canvas.LeftProperty, left);
+                    //element.SetValue(Canvas.TopProperty, top);
                 }
                 element.RemoveCommand = _removeHeaderCommand;
                 left += width + 2;

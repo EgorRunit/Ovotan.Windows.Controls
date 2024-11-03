@@ -1,17 +1,20 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Ovotan.Windows.Controls
 {
     public class ViewboxIcon : ContentControl
     {
+        public static readonly DependencyProperty BaseColorProperty;
         public static readonly DependencyProperty ViewboxProperty;
 
-        public SolidColorBrush FirstColor { get; set; }
-        public SolidColorBrush SecondColor { get; set; }
-        public SolidColorBrush MouseOverFirstColor { get; set; }
-        public SolidColorBrush MouseOverSecondColor { get; set; }
+        public SolidColorBrush BaseColor
+        {
+            get { return GetValue(BaseColorProperty) as SolidColorBrush; }
+            set { SetValue(BaseColorProperty, value); }
+        }
 
         public Viewbox Viewbox
         {
@@ -19,63 +22,112 @@ namespace Ovotan.Windows.Controls
             set { SetValue(ViewboxProperty, value); }
         }
 
+        public ICommand Command { get; set; }
+
         static ViewboxIcon()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ViewboxIcon), new FrameworkPropertyMetadata(typeof(ContentControl)));
+
             ViewboxProperty = DependencyProperty.Register("Viewbox", typeof(Viewbox), typeof(ViewboxIcon),
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, null, null));
+            BaseColorProperty = DependencyProperty.Register("BaseColor", typeof(SolidColorBrush), typeof(ViewboxIcon),
+                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, _fffF, null));
+
             SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls;component/Resources/ViewboxButtonResource.xaml", "");
         }
 
+        static void _fffF(DependencyObject d, DependencyPropertyChangedEventArgs e)
+
+        {
+            var self = d as ViewboxIcon;
+            self._setColors();
+        }
+
+        public ViewboxIcon()
+        {
+            MouseDown += (s, a) =>
+            {
+                if (Command != null)
+                {
+                    Command.Execute(this);
+                }
+            };
+        }
+
+        void _setColors()
+        {
+            if (_baseColor != null && BaseColor != null)
+            {
+                _baseColor.Color = BaseColor.Color;
+                if (_baseColorOpacity != null)
+                {
+                    _baseColorOpacity.Color = BaseColor.Color;
+                }
+            }
+        }
+
+        SolidColorBrush _baseColor;
+        SolidColorBrush _baseColorOpacity;
+        double _startOpacityValue;
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-
-            var firstColor = Viewbox.Resources["first-color"] as SolidColorBrush;
-            var secondColor = Viewbox.Resources["second-color"] as SolidColorBrush;
-            if (firstColor != null && FirstColor != null)
-            {
-                FirstColor = new SolidColorBrush(Color.FromScRgb((float)firstColor.Opacity, FirstColor.Color.ScR, FirstColor.Color.ScG, FirstColor.Color.ScB));
-                Viewbox.Resources["first-color"] = FirstColor;
-                if (MouseOverFirstColor != null)
-                {
-                    MouseOverFirstColor = new SolidColorBrush(Color.FromScRgb((float)firstColor.Opacity, MouseOverFirstColor.Color.ScR, MouseOverFirstColor.Color.ScG, MouseOverFirstColor.Color.ScB));
-                }
-            }
-            if (secondColor != null && SecondColor != null)
-            {
-                SecondColor = new SolidColorBrush(Color.FromScRgb((float)secondColor.Opacity, SecondColor.Color.ScR, SecondColor.Color.ScG, SecondColor.Color.ScB));
-                Viewbox.Resources["second-color"] = SecondColor;
-                if (MouseOverSecondColor != null)
-                {
-                    MouseOverSecondColor = new SolidColorBrush(Color.FromScRgb((float)secondColor.Opacity, MouseOverSecondColor.Color.ScR, MouseOverSecondColor.Color.ScG, MouseOverSecondColor.Color.ScB));
-                }
-            }
-            MouseEnter += (s, a) =>
-            {
-                if (MouseOverFirstColor != null && firstColor != null)
-                {
-                    Viewbox.Resources["first-color"] = MouseOverFirstColor;
-                }
-                if (MouseOverSecondColor != null && secondColor != null)
-                {
-                    Viewbox.Resources["second-color"] = MouseOverSecondColor;
-                }
-            };
-            MouseLeave += (s, a) =>
-            {
-                if (FirstColor != null && firstColor != null)
-                {
-                    Viewbox.Resources["first-color"] = FirstColor;
-                }
-                if (SecondColor != null && secondColor != null)
-                {
-                    Viewbox.Resources["second-color"] = SecondColor;
-                }
-            };
+            _baseColor = Viewbox.Resources["base-color"] as SolidColorBrush;
+            _baseColorOpacity = Viewbox.Resources["base-color-o"] as SolidColorBrush;
             Content = Viewbox;
             Viewbox.Width = Width;
             Viewbox.Height = Height;
+            if (BaseColor != null)
+            {
+                _setColors();
+            }
+
+            MouseEnter += (s, a) =>
+            {
+                Opacity = 1;
+            };
+            MouseLeave += (s, a) =>
+            {
+                Opacity = _startOpacityValue;
+            };
+            _startOpacityValue = Opacity;
+
+            //var firstColor = Viewbox.Resources["first-color"] as SolidColorBrush;
+            //var secondColor = Viewbox.Resources["second-color"] as SolidColorBrush;
+            //if (firstColor != null && FirstColor != null)
+            //{
+            //    firstColor.Color = FirstColor.Color;
+            //}
+            //if (secondColor != null && SecondColor != null)
+            //{
+            //    secondColor.Color = SecondColor.Color;
+            //}
+
+            //MouseEnter += (s, a) =>
+            //{
+            //    if (MouseOverFirstColor != null && firstColor != null)
+            //    {
+            //        firstColor.Color = MouseOverFirstColor.Color;
+            //    }
+            //    if (MouseOverSecondColor != null && secondColor != null)
+            //    {
+            //        secondColor.Color = MouseOverSecondColor.Color;
+            //    }
+            //};
+            //MouseLeave += (s, a) =>
+            //{
+            //    if (FirstColor != null && firstColor != null)
+            //    {
+            //        firstColor.Color = FirstColor.Color;
+            //    }
+            //    if (SecondColor != null && secondColor != null)
+            //    {
+            //        secondColor.Color = SecondColor.Color;
+            //    }
+            //};
+            //Content = Viewbox;
+            //Viewbox.Width = Width;
+            //Viewbox.Height = Height;
         }
     }
 }

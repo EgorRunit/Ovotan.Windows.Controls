@@ -1,3 +1,4 @@
+using Ovotan.Windows.Controls.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -107,13 +108,8 @@ namespace Ovotan.Windows.Controls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            //_borderBrush = Template.Resources["BorderBrush"] as SolidColorBrush;
-            //_mouseOverCloseBrush = Template.Resources["MouseOverClose"] as SolidColorBrush;
-            _closeGeometry = Template.FindName("CloseGeometry", this) as GeometryDrawing;
-            _closeButton = Template.FindName("CloseButton", this) as Rectangle;
-            //_closeButton.MouseEnter += (x, d) => { _closeGeometry.Brush = _mouseOverCloseBrush; };
-            //_closeButton.MouseLeave += (x, d) => { _closeGeometry.Brush = _borderBrush; };
-            _closeButton.MouseDown += (x, d) => { _closeButtonHandler(); };
+            var viewboxIcon = Template.FindName("ViewBoxIcon", this) as ViewboxIcon;
+            viewboxIcon.Command = new ButtonCommand<object>(_ => _closeButtonHandler());
             DataContext = this;
         }
 
