@@ -72,7 +72,7 @@
                     <controls:ViewboxIcon 
                         Width="12" Height="12" Opacity="0.5"
                         BaseColor="Black"
-                        Viewbox="{DynamicResource OVBT_Close1}"></controls:ViewboxIcon>
+                        Viewbox="{DynamicResource OVBT_DownArrow}"></controls:ViewboxIcon>
                 </MenuItem.Header>
             </MenuItem>
             <MenuItem Padding="0" BorderThickness="0">
