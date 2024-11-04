@@ -8,8 +8,19 @@ namespace Ovotan.Windows.Controls
 {
     public class TabHeaders : Panel
     {
-        public static DependencyProperty IsMultiRowsProperty;
+        static DependencyProperty IsMouseWheelProperty;
+        static DependencyProperty IsMultiRowsProperty;
         static DependencyProperty SelectedItemCommandProperty;
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsMouseWheel
+        {
+            get { return (bool)GetValue(IsMouseWheelProperty); }
+            set { SetValue(IsMouseWheelProperty, value); }
+        }
 
         public ICommand SelectedItemCommand
         {
@@ -43,9 +54,12 @@ namespace Ovotan.Windows.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(TabHeaders), new FrameworkPropertyMetadata(typeof(TabHeaders)));
             IsMultiRowsProperty = DependencyProperty.Register("IsMultiRows", typeof(bool), typeof(TabHeaders),
                 new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, _isMultiRowChangedHandler, null));
+            IsMouseWheelProperty = DependencyProperty.Register("IsMouseWheel", typeof(bool), typeof(TabHeaders),
+                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, _isMultiRowChangedHandler, null));
             SelectedItemCommandProperty = DependencyProperty.Register("SelectedItemCommand", typeof(ICommand), typeof(TabHeaders),
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, null, null));
 
+            
             SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls;component/Resources/TabControl.xaml", "");
         }
 
@@ -67,12 +81,14 @@ namespace Ovotan.Windows.Controls
         public TabHeaders()
         {
             MouseDown += _mouseDownHandler;
-            _removeHeaderCommand = new ButtonCommand<TabHeader>((x) => _removeHeader(x));
+            _removeHeaderCommand = new ButtonCommand<TabHeader>((x) => _removeHeaderHandler(x));
         }
 
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
+            MouseWheel += _mouseWheelHandler;
+
             _menuBlock = Application.Current.Resources["OVBT_TCH_Menu"] as StackPanel;
             _menuBlock.DataContext = this;
             var menu = _menuBlock.Children[0] as Menu;
@@ -97,7 +113,6 @@ namespace Ovotan.Windows.Controls
                         list.Add(header as TabHeader);
                     }
                 }
-                //SystemColors.MenuHighlightBrush
                 var elements = list.Select(x => new MenuItem()
                 {
                     Header = x.Header,
@@ -203,7 +218,26 @@ namespace Ovotan.Windows.Controls
                 constraint.Height = top + Children[0].DesiredSize.Height;
             }
             return base.MeasureOverride(new Size(constraint.Width, constraint.Height));
+        }
 
+        /// <summary>
+        /// Mouse wheel handler. Changing IsMultiRows property.
+        /// </summary>
+        void _mouseWheelHandler(object sender, MouseWheelEventArgs args)
+        {
+            if (IsMouseWheel)
+            {
+                if (args.Delta > 0 && IsMultiRows)
+                {
+                    IsMultiRows = false;
+                    InvalidateMeasure();
+                }
+                else if (args.Delta < 0 && !IsMultiRows)
+                {
+                    IsMultiRows = true;
+                    InvalidateMeasure();
+                }
+            }
         }
 
         /// <summary>
@@ -223,7 +257,6 @@ namespace Ovotan.Windows.Controls
             {
                 InvalidateArrange();
             }
-
         }
 
         /// <summary>
@@ -239,10 +272,10 @@ namespace Ovotan.Windows.Controls
         }
 
         /// <summary>
-        /// Removing header.
+        /// The remove header handler.
         /// </summary>
-        /// <param name="item">Еhe header is being deleted.</param>
-        void _removeHeader(TabHeader item)
+        /// <param name="item">The header is being deleted.</param>
+        void _removeHeaderHandler(TabHeader item)
         {
             var headerIndex = Children.IndexOf(item);
             Children.Remove(item);

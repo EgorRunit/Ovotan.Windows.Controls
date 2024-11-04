@@ -2,6 +2,10 @@
                     xmlns:controls="clr-namespace:Ovotan.Windows.Controls"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <Style TargetType="{x:Type controls:TabHeaders}">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    
     <Style TargetType="{x:Type controls:TabHeader}">
         <Setter Property="Background" Value="#3B4F81"/>
         <Setter Property="BorderBrush" Value="#3B4F81"/>
@@ -81,6 +85,9 @@
                 <MenuItem 
                     IsChecked="{Binding Mode=TwoWay,Path=IsMultiRows}"
                     IsCheckable="True" Header="Показывать вкладки в нескольких строках"/>
+                <MenuItem 
+                    IsChecked="{Binding Mode=TwoWay,Path=IsMouseWheel}"
+                    IsCheckable="True" Header="Переключать мульти строчность по прокрутке мыши"/>
             </MenuItem>
         </Menu>
     </StackPanel>
