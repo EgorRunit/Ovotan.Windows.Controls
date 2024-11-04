@@ -23,7 +23,7 @@ namespace Ovotan.Windows.Controls.TestApp
         int index = 1;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var tab = new TabHeader() { Header = "eeeee - " + index };
+            var tab = new TabControlItem() { Header = "eeeee - " + index, Content = new TextBox() { Text = "wwww" } };
             MainTabControl.AddTab(tab);
             index++;
         }

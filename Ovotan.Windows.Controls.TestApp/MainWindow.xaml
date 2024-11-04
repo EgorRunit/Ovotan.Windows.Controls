@@ -7,6 +7,9 @@
         xmlns:controls="clr-namespace:Ovotan.Windows.Controls;assembly=Ovotan.Windows.Controls"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,8 +17,43 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <controls:TabControl x:Name="MainTabControl" Grid.Row="1">
+        <controls:TabControl x:Name="MainTabControl" Grid.Row="1" Background="AliceBlue">
         </controls:TabControl>
         <Button Content="Add" Grid.Row="2" Click="Button_Click"/>
+
+        <Popup Height="150" AllowsTransparency="true" Focusable="false" Visibility="Collapsed" 
+               Placement="Bottom" >
+            <Border x:Name="SubMenuBorder" 
+                        BorderThickness="1" Background="Green" BorderBrush="Blue">
+                <ScrollViewer Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                    <ListBox>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                        <ListBoxItem>sdfsdfsd</ListBoxItem>
+                    </ListBox>                    
+                </ScrollViewer>
+            </Border>
+        </Popup>
     </Grid>
 </Window>

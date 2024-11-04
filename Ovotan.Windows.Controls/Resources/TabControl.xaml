@@ -50,13 +50,45 @@
         </Setter>
     </Style>
 
+    <Style TargetType="{x:Type controls:TabControlItem}" BasedOn="{StaticResource {x:Type controls:TabHeader}}"></Style>
 
 
 
-    <Style TargetType="{x:Type controls:TabControl}">
+    <StackPanel x:Shared="false" x:Key="OVBT_TCH_Menu" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,0,0,3">
+        <StackPanel.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrush}">Red</SolidColorBrush>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}">Red</SolidColorBrush>
+            <SolidColorBrush x:Key="{x:Static SystemColors.MenuHighlightBrush}">Red</SolidColorBrush>
+            <SolidColorBrush x:Key="{x:Static SystemColors.MenuHighlightBrushKey}">Red</SolidColorBrush>
+        </StackPanel.Resources>
+
+        <Menu   VerticalAlignment="Bottom" x:Name="ActionMenu" Grid.Column="1" Grid.Row="0" Background="Transparent">
+            <MenuItem  Padding="0" BorderThickness="0">
+                <MenuItem.Header>
+                    <controls:ViewboxIcon 
+                        Width="12" Height="12" Opacity="0.5"
+                        BaseColor="Black"
+                        Viewbox="{DynamicResource OVBT_Close1}"></controls:ViewboxIcon>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem Padding="0" BorderThickness="0">
+                <MenuItem.Header>
+                    <controls:ViewboxIcon 
+                        Width="12" Height="12" Opacity="0.8"
+                        BaseColor="Black"
+                        Viewbox="{DynamicResource OVBT_Settings}"></controls:ViewboxIcon>
+                </MenuItem.Header>
+                <MenuItem 
+                    IsChecked="{Binding Mode=TwoWay,Path=IsMultiRows}"
+                    IsCheckable="True" Header="Показывать вкладки в нескольких строках"/>
+            </MenuItem>
+        </Menu>
+    </StackPanel>
+
+    <Style TargetType="{x:Type controls:TabControl}" BasedOn="{StaticResource {x:Type ContentControl}}">
         <Setter Property="BorderBrush" Value="Gray"/>
         <Setter Property="BorderThickness" Value="1,1,1,1"/>
-        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="Background" Value="Red"></Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:TabControl}">
@@ -70,35 +102,9 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <ContentPresenter Content="{TemplateBinding Headers}"/>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0" Margin="0,0,0,3">
-                            <Menu VerticalAlignment="Bottom" x:Name="ActionMenu" Grid.Column="1" Grid.Row="0" Background="Transparent">
-                                <MenuItem x:Name="DocumentDropDownList" BorderThickness="0" Padding="0">
-                                    <MenuItem.Header>
-                                        <controls:ViewboxIcon 
-                                            Width="12" Height="12" Opacity="0.8"
-                                            BaseColor="Black"
-                                            Viewbox="{DynamicResource OVBT_Close1}"></controls:ViewboxIcon>
-                                    </MenuItem.Header>
-                                </MenuItem>
-                                <MenuItem  Padding="0" BorderThickness="0">
-                                    <MenuItem.Header>
-                                        <controls:ViewboxIcon 
-                                            Width="12" Height="12" Opacity="0.8"
-                                            BaseColor="Black"
-                                            Viewbox="{DynamicResource OVBT_Settings}"></controls:ViewboxIcon>
-                                    </MenuItem.Header>
-                                    <MenuItem 
-                                              IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay,Path=IsMultiRows}"
-                                              IsCheckable="True" Header="Показывать вкладки в нескольких строках"/>
-                                </MenuItem>
-                            </Menu>
-                        </StackPanel>
+                        <controls:TabHeaders Grid.Row="0" x:Name="TabHeaders" VerticalAlignment="Stretch"/>
                         <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Background="#F5CC84"/>
-                        <ContentControl x:Name="TabContent" Grid.Row="2" Grid.ColumnSpan="2">
-                            <Border  BorderBrush="{TemplateBinding BorderBrush}"  BorderThickness="{TemplateBinding BorderThickness}">
-                                <TextBlock Text="sdfdsfsd"/>
-                            </Border>
+                        <ContentControl Content="{TemplateBinding Content}" x:Name="TabContent" Grid.Row="2" Grid.ColumnSpan="2">
                         </ContentControl>
                     </Grid>
                 </ControlTemplate>

@@ -9,6 +9,7 @@ namespace Ovotan.Windows.Controls
 {
     public class TabHeader : ContentControl
     {
+
         SolidColorBrush _mouseOverCloseBrush;
         SolidColorBrush _borderBrush;
         GeometryDrawing _closeGeometry;
@@ -43,7 +44,6 @@ namespace Ovotan.Windows.Controls
                 new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, null, null));
             HeaderProperty = DependencyProperty.Register("Header", typeof(string), typeof(TabHeader),
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, null, null));
-
         }
 
 
