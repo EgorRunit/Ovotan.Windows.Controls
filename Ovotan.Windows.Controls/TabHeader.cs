@@ -17,7 +17,7 @@ namespace Ovotan.Windows.Controls
         static DependencyProperty IsActiveProperty;
         static DependencyProperty HeaderProperty;
 
-        internal Rect Rect;
+        internal Rect Rectangle;
 
         public bool IsActive
         {

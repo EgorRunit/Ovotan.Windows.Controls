@@ -20,11 +20,12 @@ namespace Ovotan.Windows.Controls.TestApp
         {
             InitializeComponent();
         }
-
+        int index = 1;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var tab = new TabHeader() { Header = "eeeee" };
+            var tab = new TabHeader() { Header = "eeeee - " + index };
             MainTabControl.AddTab(tab);
+            index++;
         }
     }
 }

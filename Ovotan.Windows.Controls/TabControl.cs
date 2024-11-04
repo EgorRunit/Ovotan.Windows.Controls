@@ -77,7 +77,7 @@ namespace Ovotan.Windows.Controls
                 {
                     Header = x.Header,
                     Tag = x,
-                    Command = new ButtonCommand<TabHeader>(x => Headers.SetActive(x)),
+                    //Command = new ButtonCommand<TabHeader>(x => Headers.SetActive(x)),
                     CommandParameter = x
                 }).ToList();
                 dropDownListElements.ItemsSource = elements;

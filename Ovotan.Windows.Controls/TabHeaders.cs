@@ -41,53 +41,49 @@ namespace Ovotan.Windows.Controls
             _setActiveTab(header);
         }
 
-        public void SetActive(TabHeader tabHeader)
-        {
-            _setActiveTab(tabHeader);
-        }
-
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
-            var left = 0.0;
-            var top = 0.0;
-            var height = 0.0;
             if (Children.Count > 0)
             {
-                var firstHeader = Children[0];
-                height = firstHeader.DesiredSize.Height;
+                var headers = Children.ToList<TabHeader>();
+                var startRenderIndex = 0;
+                var endRenderIndex = headers.Count;
+
                 if (!_isMultiRows)
                 {
-                    for (var i = 0; i < Children.Count; i++)
+                    if (_previouslySelectedHeader != null && _previouslySelectedHeader.Rectangle.Left > arrangeBounds.Width)
                     {
-                        var header = Children[i] as TabHeader;
-                        if (left != 0 && left + header.DesiredSize.Width + 2 > arrangeBounds.Width)
+                        endRenderIndex = headers.IndexOf(_previouslySelectedHeader);
+                        var leftMax = _previouslySelectedHeader.Rectangle.Left + _previouslySelectedHeader.Rectangle.Width - arrangeBounds.Width;
+                        var right = headers.FirstOrDefault(x => x.Rectangle.Left + x.Rectangle.Width > leftMax);
+                        startRenderIndex = headers.IndexOf(right) + 1;
+                    }
+                    else
+                    {
+                        var right = headers.FirstOrDefault(x => x.Rectangle.Left + x.Rectangle.Width > arrangeBounds.Width);
+                        if (right != null)
                         {
-                            //header.Arrange(new Rect(0, 0, 0, 0));
+                            endRenderIndex = headers.IndexOf(right) - 1;
                         }
-                        else
-                        {
-                            header.Rect = new Rect(left, top, header.DesiredSize.Width, header.DesiredSize.Height);
-                            header.Arrange(header.Rect);
-                            arrangeBounds.Height = header.DesiredSize.Height + 2;
-                        }
-                        left += header.DesiredSize.Width + 2;
                     }
                 }
-                else
+
+                var delta = headers[startRenderIndex].Rectangle.Left;
+                Rect rect;
+                for (var i = 0; i < headers.Count; i++)
                 {
-                    for (var i = 0; i < Children.Count; i++)
+                    var header = headers[i];
+                    rect = header.Rectangle;
+                    if (i >= startRenderIndex && i <= endRenderIndex)
                     {
-                        var header = Children[i];
-                        if (left != 0 && left + header.DesiredSize.Width + 2 > arrangeBounds.Width)
-                        {
-                            left = 0;
-                            top += header.DesiredSize.Height + 2;
-                        }
-                        header.Arrange(new Rect(left, top, header.DesiredSize.Width, header.DesiredSize.Height));
-                        left += header.DesiredSize.Width + 2;
+                        header.Arrange(new Rect(rect.Left - delta, rect.Top, rect.Width, rect.Height));
+                    }
+                    else
+                    {
+                        header.Arrange(new Rect(0,0,0,0));
                     }
                 }
-                arrangeBounds.Height = top + height;
+                arrangeBounds.Height = rect.Top + rect.Height;
             }
             Height = arrangeBounds.Height;
             return base.ArrangeOverride(new Size(arrangeBounds.Width, arrangeBounds.Height));
@@ -97,35 +93,28 @@ namespace Ovotan.Windows.Controls
         {
             var left = 0.0;
             var top = 0.0;
-            var height = 0.0; 
             if (Children.Count > 0)
             {
-                var firstHeader = Children[0];
-                firstHeader.Measure(constraint);
-                height = firstHeader.DesiredSize.Height;
                 for (var i = 0; i < Children.Count; i++)
                 {
                     var header = Children[i] as TabHeader;
                     if (header != null)
                     {
                         header.Measure(constraint);
-                        if (!_isMultiRows)
-                        {
-                            left += header.DesiredSize.Width + 2;
-                        }
-                        else
+                        header.Rectangle = new Rect(left, top, header.DesiredSize.Width, header.DesiredSize.Height);
+                        left += header.DesiredSize.Width + 2;
+                        if (_isMultiRows)
                         {
                             if (left != 0 && left + header.DesiredSize.Width + 2 > constraint.Width)
                             {
                                 left = 0;
                                 top += header.DesiredSize.Height + 2;
                             }
-                            left += header.DesiredSize.Width + 2;
                         }
                     }
                     header.RemoveCommand = _removeHeaderCommand;
                 }
-                constraint.Height = height + top;
+                constraint.Height = top + Children[0].DesiredSize.Height;
             }
             return base.MeasureOverride(new Size(constraint.Width, constraint.Height));
 
@@ -143,32 +132,10 @@ namespace Ovotan.Windows.Controls
             }
             _previouslySelectedHeader = item;
             _previouslySelectedHeader.IsActive = true;
-            return;
-            //var point = new Point();
-            //var ssds = this.TranslatePoint(point, Children[0]);
-            //var ssds1 = Children[0].GetValue(Canvas.LeftProperty);
-            //var documentLeftPosition = (double)item.GetValue(Canvas.LeftProperty);
-            //if (documentLeftPosition + item.ActualWidth > ActualWidth)
-            //{
-            //    var left = 0.0;
-            //    for (var i = 0; i <Children.Count; i++)
-            //    {
-            //        var document = Children[i] as TabHeader;
-            //        if (left + document.ActualWidth > ActualWidth && document != null)
-            //        {
-            //            if (i > 0)
-            //            {
-            //                i--;
-            //            }
-            //            var documentIndex = Children.IndexOf(item);
-            //            Children[documentIndex] = Children[i];
-            //            Children[i] = item;
-            //            break;
-            //        }
-            //        left += document.ActualWidth + 2;
-            //    }
-            //    MeasureOverride(new Size(ActualWidth, ActualHeight));
-            //}
+            if(_previouslySelectedHeader.Rectangle.Left + _previouslySelectedHeader.Rectangle.Width > ActualWidth)
+            {
+                InvalidateArrange();
+            }
         }
 
         /// <summary>
