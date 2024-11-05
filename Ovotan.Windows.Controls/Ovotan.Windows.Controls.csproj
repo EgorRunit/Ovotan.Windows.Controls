@@ -4,6 +4,8 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RepositoryUrl>https://github.com/EgorRunit/Ovotan.Windows.Controls/tree/main</RepositoryUrl>
+    <Title>Ovotan WPF controls</Title>
   </PropertyGroup>
 
 </Project>
