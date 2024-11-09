@@ -8,6 +8,7 @@ namespace Ovotan.Windows.Controls
 {
     public class TabHeaders : Panel
     {
+        const int _leftHeaderStep = 0;
         static DependencyProperty IsMouseWheelProperty;
         static DependencyProperty IsMultiRowsProperty;
         static DependencyProperty SelectedItemCommandProperty;
@@ -216,13 +217,13 @@ namespace Ovotan.Windows.Controls
                     {
                         header.Measure(constraint);
                         header.Rectangle = new Rect(left, top, header.DesiredSize.Width, header.DesiredSize.Height);
-                        left += header.DesiredSize.Width + 2;
+                        left += header.DesiredSize.Width + _leftHeaderStep;
                         if (isMultiRows)
                         {
-                            if (left != 0 && left + header.DesiredSize.Width + 2 > headersWidth)
+                            if (left != 0 && left + header.DesiredSize.Width + _leftHeaderStep > headersWidth)
                             {
                                 left = 0;
-                                top += header.DesiredSize.Height + 2;
+                                top += header.DesiredSize.Height + _leftHeaderStep ;
                             }
                         }
                         header.RemoveCommand = _removeHeaderCommand;
@@ -262,14 +263,12 @@ namespace Ovotan.Windows.Controls
             if (_previouslySelectedHeader != null)
             {
                 _previouslySelectedHeader.IsActive = false;
+                _previouslySelectedHeader.IsSelected = false;
             }
             _previouslySelectedHeader = item;
             _previouslySelectedHeader.IsActive = true;
+            _previouslySelectedHeader.IsSelected = true;
             SelectedItemCommand?.Execute(_previouslySelectedHeader);
-            if(_previouslySelectedHeader.Rectangle.Left + _previouslySelectedHeader.Rectangle.Width > ActualWidth)
-            {
-                InvalidateArrange();
-            }
         }
 
         /// <summary>

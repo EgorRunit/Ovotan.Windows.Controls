@@ -16,9 +16,16 @@ namespace Ovotan.Windows.Controls
         Rectangle _closeButton;
 
         static DependencyProperty IsActiveProperty;
+        static DependencyProperty IsSelectedProperty;
         static DependencyProperty HeaderProperty;
 
         internal Rect Rectangle;
+
+        public bool IsSelected
+        {
+            get { return (bool)GetValue(IsSelectedProperty); }
+            set { SetValue(IsSelectedProperty, value); }
+        }
 
         public bool IsActive
         {
@@ -40,6 +47,8 @@ namespace Ovotan.Windows.Controls
         static TabHeader()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(TabHeader), new FrameworkPropertyMetadata(typeof(ContentControl)));
+            IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(TabHeader),
+                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, null, null));
             IsActiveProperty = DependencyProperty.Register("IsActive", typeof(bool), typeof(TabHeader),
                 new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, null, null));
             HeaderProperty = DependencyProperty.Register("Header", typeof(string), typeof(TabHeader),

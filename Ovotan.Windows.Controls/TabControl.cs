@@ -32,6 +32,10 @@ namespace Ovotan.Windows.Controls
             _tabHeaders.SelectedItemCommand = new ButtonCommand<TabControlItem>(x =>
             {
                 Content = x?.Content;
+                if (Content is FrameworkElement contentElement)
+                {
+                    contentElement.Focus();
+                }
             });
         }
 
