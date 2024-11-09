@@ -71,6 +71,11 @@ namespace Ovotan.Windows.Controls
         double _startOpacityValue;
         public override void OnApplyTemplate()
         {
+            if(Viewbox == null)
+            {
+                throw new Exception("выбирите шаблона иконки");
+            }
+
             base.OnApplyTemplate();
             _baseColor = Viewbox.Resources["base-color"] as SolidColorBrush;
             _baseColorOpacity = Viewbox.Resources["base-color-o"] as SolidColorBrush;

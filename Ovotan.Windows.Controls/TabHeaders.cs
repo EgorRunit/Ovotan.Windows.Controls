@@ -187,6 +187,13 @@ namespace Ovotan.Windows.Controls
                     _menuBlock.DesiredSize.Height));
                 _splitter.Arrange(new Rect(0, rect.Top + rect.Height, arrangeBounds.Width, _splitter.Height));
             }
+            else
+            {
+                _menuBlock.Arrange(new Rect(0, 0, 0, 0));
+                _splitter.Arrange(new Rect(0, 0, 0, 0));
+                arrangeBounds.Height = 0;
+            }
+
             Height = arrangeBounds.Height;
             return base.ArrangeOverride(new Size(arrangeBounds.Width, arrangeBounds.Height));
         }
@@ -283,24 +290,27 @@ namespace Ovotan.Windows.Controls
         /// <param name="item">The header is being deleted.</param>
         void _removeHeaderHandler(TabHeader item)
         {
-            var headerIndex = Children.IndexOf(item);
+            var headers = Children.ToList<TabHeader>();
+            var headerIndex = headers.IndexOf(item);
             Children.Remove(item);
-            if (Children.Count > 0 && item.IsActive)
+            headers.Remove(item);
+            UIElement newActiveSiteHostTabControlItem = null;
+            if (headers.Count > 0 && item.IsActive)
             {
-                UIElement newActiveSiteHostTabControlItem = null;
-                if (headerIndex < Children.Count)
+                if (headerIndex < headers.Count)
                 {
-                    newActiveSiteHostTabControlItem = Children[headerIndex];
+                    newActiveSiteHostTabControlItem = headers[headerIndex];
                 }
                 else
                 {
-                    newActiveSiteHostTabControlItem = Children[headerIndex - 1];
+                    newActiveSiteHostTabControlItem = headers[headerIndex - 1];
                 }
-                if (newActiveSiteHostTabControlItem is TabHeader)
-                {
-                    _previouslySelectedHeader = newActiveSiteHostTabControlItem as TabHeader;
-                    _previouslySelectedHeader.IsActive = true;
-                }
+                _previouslySelectedHeader = newActiveSiteHostTabControlItem as TabHeader;
+                _previouslySelectedHeader.IsActive = true;
+            }
+            if (item.IsActive)
+            {
+                SelectedItemCommand?.Execute(newActiveSiteHostTabControlItem);
             }
             InvalidateMeasure();
         }

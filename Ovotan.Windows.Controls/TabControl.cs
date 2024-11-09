@@ -31,7 +31,7 @@ namespace Ovotan.Windows.Controls
             _tabHeaders = Template.FindName("TabHeaders", this) as TabHeaders;
             _tabHeaders.SelectedItemCommand = new ButtonCommand<TabControlItem>(x =>
             {
-                Content = x.Content;
+                Content = x?.Content;
             });
         }
 
