@@ -60,6 +60,16 @@ namespace Ovotan.Windows.Controls
             }
         }
 
+
+        public static void AddResource(string source)
+        {
+            lock (_loadedSchemas)
+            {
+                _callback(source, "");
+            }
+        }
+
+
         /// <summary>
         /// Смена текущей схемы.
         /// </summary>
