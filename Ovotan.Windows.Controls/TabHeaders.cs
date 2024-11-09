@@ -29,6 +29,7 @@ namespace Ovotan.Windows.Controls
         }
 
         ICommand _removeHeaderCommand;
+        Border _splitter;
         StackPanel _menuBlock;
         /// <summary>
         /// Previously selected header.
@@ -51,14 +52,13 @@ namespace Ovotan.Windows.Controls
         /// </summary>
         static TabHeaders()
         { 
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(TabHeaders), new FrameworkPropertyMetadata(typeof(TabHeaders)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(TabHeaders), new FrameworkPropertyMetadata(typeof(Panel)));
             IsMultiRowsProperty = DependencyProperty.Register("IsMultiRows", typeof(bool), typeof(TabHeaders),
                 new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, _isMultiRowChangedHandler, null));
             IsMouseWheelProperty = DependencyProperty.Register("IsMouseWheel", typeof(bool), typeof(TabHeaders),
                 new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, _isMultiRowChangedHandler, null));
             SelectedItemCommandProperty = DependencyProperty.Register("SelectedItemCommand", typeof(ICommand), typeof(TabHeaders),
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, null, null));
-
             
             SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls;component/Resources/TabControl.xaml", "");
         }
@@ -89,7 +89,8 @@ namespace Ovotan.Windows.Controls
             base.OnInitialized(e);
             MouseWheel += _mouseWheelHandler;
 
-            _menuBlock = Application.Current.Resources["OVBT_TCH_Menu"] as StackPanel;
+            _splitter = Application.Current.Resources["Ovotan.Windows.Controls.TabHeaders.Splitter"] as Border;
+            _menuBlock = Application.Current.Resources["Ovotan.Windows.Controls.TabHeaders.RightMenu"] as StackPanel;
             _menuBlock.DataContext = this;
             var menu = _menuBlock.Children[0] as Menu;
             var dropDownListElements = menu.Items[0] as MenuItem;
@@ -123,7 +124,9 @@ namespace Ovotan.Windows.Controls
                 dropDownListElements.ItemsSource = elements;
             };
             Children.Add(_menuBlock);
+            Children.Add(_splitter);
         }
+
 
         public void AddHeader(TabHeader header)
         {
@@ -174,15 +177,17 @@ namespace Ovotan.Windows.Controls
                         header.Arrange(new Rect(0,0,0,0));
                     }
                 }
-                arrangeBounds.Height = rect.Top + rect.Height;
+                arrangeBounds.Height = rect.Top + rect.Height + _splitter.Height;
+
+
+                _menuBlock.Arrange(new Rect(
+                    arrangeBounds.Width - _menuBlock.DesiredSize.Width,
+                    Height - _menuBlock.DesiredSize.Height,
+                    _menuBlock.DesiredSize.Width,
+                    _menuBlock.DesiredSize.Height));
+                _splitter.Arrange(new Rect(0, rect.Top + rect.Height, arrangeBounds.Width, _splitter.Height));
             }
             Height = arrangeBounds.Height;
-            _menuBlock.Arrange(new Rect(
-                arrangeBounds.Width - _menuBlock.DesiredSize.Width,
-                Height - _menuBlock.DesiredSize.Height,
-                _menuBlock.DesiredSize.Width, 
-                _menuBlock.DesiredSize.Height));
-
             return base.ArrangeOverride(new Size(arrangeBounds.Width, arrangeBounds.Height));
         }
 
@@ -194,6 +199,7 @@ namespace Ovotan.Windows.Controls
             if (Children.Count > 0)
             {
                 _menuBlock.Measure(constraint);
+                _splitter.Measure(constraint);
                 var headersWidth = constraint.Width - _menuBlock.DesiredSize.Width;
                 var isMultiRows = IsMultiRows;
                 for (var i = 0; i < Children.Count; i++)
@@ -215,7 +221,7 @@ namespace Ovotan.Windows.Controls
                         header.RemoveCommand = _removeHeaderCommand;
                     }
                 }
-                constraint.Height = top + Children[0].DesiredSize.Height;
+                constraint.Height = top + Children[0].DesiredSize.Height + _splitter.Height;
             }
             return base.MeasureOverride(new Size(constraint.Width, constraint.Height));
         }

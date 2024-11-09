@@ -105,43 +105,6 @@
         </Rectangle>
     </Viewbox>
 
-    <Viewbox x:Shared="false" x:Key="OVBT_BoldClose" Width="16 " Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:System="clr-namespace:System;assembly=mscorlib">
-        <Viewbox.Resources>
-            <SolidColorBrush x:Key="base-color" Color="#212121" Opacity="1" />
-        </Viewbox.Resources>
-        <Rectangle Width="16 " Height="16">
-            <Rectangle.Fill>
-                <DrawingBrush Stretch="None">
-                    <DrawingBrush.Drawing>
-                        <DrawingGroup>
-                            <DrawingGroup>
-                                <GeometryDrawing Brush="{DynamicResource base-color}" Geometry="F1M8.207,7.5l5.147,5.146-.708.708L7.5,8.207,2.354,13.354l-.708-.708L6.793,7.5,1.646,2.354l.708-.708L7.5,6.793l5.146-5.147.708.708Z" />
-                            </DrawingGroup>
-                        </DrawingGroup>
-                    </DrawingBrush.Drawing>
-                </DrawingBrush>
-            </Rectangle.Fill>
-        </Rectangle>
-    </Viewbox>
-    <Geometry x:Key="Ovotan.Windows.Controls.Docking.ButtonIconPin" >
-        M11,9V1.5L10.5,1h-6L4,1.5V9H3v1h9V9ZM5,9V2h5V9Z M8,10v5H7V10Z
-    </Geometry>
-    <Geometry x:Key="Ovotan.Windows.Controls.Docking.ButtonIconClose" >
-        F1M8.207,7.5l5.147,5.146-.708.708L7.5,8.207,2.354,13.354l-.708-.708L6.793,7.5,1.646,2.354l.708-.708L7.5,6.793l5.146-5.147.708.708Z
-    </Geometry>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

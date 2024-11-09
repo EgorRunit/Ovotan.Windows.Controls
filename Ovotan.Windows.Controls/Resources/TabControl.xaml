@@ -2,10 +2,6 @@
                     xmlns:controls="clr-namespace:Ovotan.Windows.Controls"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Style TargetType="{x:Type controls:TabHeaders}">
-        <Setter Property="Background" Value="Transparent"/>
-    </Style>
-    
     <Style TargetType="{x:Type controls:TabHeader}">
         <Setter Property="Background" Value="#3B4F81"/>
         <Setter Property="BorderBrush" Value="#3B4F81"/>
@@ -56,16 +52,16 @@
 
     <Style TargetType="{x:Type controls:TabControlItem}" BasedOn="{StaticResource {x:Type controls:TabHeader}}"></Style>
 
+    <Border x:Shared="false"  x:Key="Ovotan.Windows.Controls.TabHeaders.Splitter">
+        <Border.Style>
+            <Style TargetType="{x:Type Border}">
+                <Setter Property="Background" Value="#F5CC84"/>
+                <Setter Property="Height" Value="2"/>
+            </Style>
+        </Border.Style>
+    </Border>
 
-
-    <StackPanel x:Shared="false" x:Key="OVBT_TCH_Menu" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,0,0,3">
-        <StackPanel.Resources>
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrush}">Red</SolidColorBrush>
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}">Red</SolidColorBrush>
-            <SolidColorBrush x:Key="{x:Static SystemColors.MenuHighlightBrush}">Red</SolidColorBrush>
-            <SolidColorBrush x:Key="{x:Static SystemColors.MenuHighlightBrushKey}">Red</SolidColorBrush>
-        </StackPanel.Resources>
-
+    <StackPanel x:Shared="false" x:Key="Ovotan.Windows.Controls.TabHeaders.RightMenu" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,0,0,3">
         <Menu   VerticalAlignment="Bottom" x:Name="ActionMenu" Grid.Column="1" Grid.Row="0" Background="Transparent">
             <MenuItem  Padding="0" BorderThickness="0">
                 <MenuItem.Header>
@@ -102,7 +98,6 @@
                     <Grid Background="{TemplateBinding Background}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="2"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -110,7 +105,6 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <controls:TabHeaders Grid.Row="0" x:Name="TabHeaders" VerticalAlignment="Stretch"/>
-                        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Background="#F5CC84"/>
                         <ContentControl Content="{TemplateBinding Content}" x:Name="TabContent" Grid.Row="2" Grid.ColumnSpan="2">
                         </ContentControl>
                     </Grid>
