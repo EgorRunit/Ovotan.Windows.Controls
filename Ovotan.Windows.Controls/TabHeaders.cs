@@ -294,23 +294,23 @@ namespace Ovotan.Windows.Controls
             var headerIndex = headers.IndexOf(item);
             Children.Remove(item);
             headers.Remove(item);
-            UIElement newActiveSiteHostTabControlItem = null;
             if (headers.Count > 0 && item.IsActive)
             {
                 if (headerIndex < headers.Count)
                 {
-                    newActiveSiteHostTabControlItem = headers[headerIndex];
+                    SelectedHeader = headers[headerIndex];
                 }
                 else
                 {
-                    newActiveSiteHostTabControlItem = headers[headerIndex - 1];
+                    SelectedHeader = headers[headerIndex - 1];
                 }
-                SelectedHeader = newActiveSiteHostTabControlItem as TabHeader;
                 SelectedHeader.IsActive = true;
-            }
-            if (item.IsActive)
-            {   
+                SelectedHeader.IsSelected = true;
                 SelectedItemCommand?.Execute(SelectedHeader);
+            }
+            if (headers.Count == 0)
+            {   
+                SelectedItemCommand?.Execute(null);
             }
             InvalidateMeasure();
         }
