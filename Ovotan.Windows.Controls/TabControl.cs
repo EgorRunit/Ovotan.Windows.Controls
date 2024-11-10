@@ -1,9 +1,4 @@
 using Ovotan.Windows.Controls.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -37,6 +32,20 @@ namespace Ovotan.Windows.Controls
                     contentElement.Focus();
                 }
             });
+            LostFocus += (s, e) =>
+            {
+                if (_tabHeaders.SelectedHeader != null)
+                {
+                    _tabHeaders.SelectedHeader.IsActive = false;
+                }
+            };
+            GotFocus += (s, e) =>
+            {
+                if (_tabHeaders.SelectedHeader != null)
+                {
+                    _tabHeaders.SelectedHeader.IsActive = true;
+                }
+            };
         }
 
         public void AddTab(TabControlItem tabControl)

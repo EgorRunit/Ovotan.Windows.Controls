@@ -33,9 +33,9 @@ namespace Ovotan.Windows.Controls
         Border _splitter;
         StackPanel _menuBlock;
         /// <summary>
-        /// Previously selected header.
+        /// The currently selected header.
         /// </summary>
-        TabHeader _previouslySelectedHeader;
+        public TabHeader SelectedHeader { get; set; }
 
 
         /// <summary>
@@ -102,7 +102,6 @@ namespace Ovotan.Windows.Controls
                 dropDownListElements.Background = null;
             };
 
-            var s = dropDownListElements.Resources;
             dropDownListElements.ItemsSource = new List<int>() { 4 };
             dropDownListElements.SubmenuOpened += (d, f) =>
             {
@@ -138,6 +137,7 @@ namespace Ovotan.Windows.Controls
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
             var headers = Children.ToList<TabHeader>();
+            var selectedHeader = SelectedHeader;
             if (headers.Count > 0)
             {
                 var startRenderIndex = 0;
@@ -146,10 +146,10 @@ namespace Ovotan.Windows.Controls
 
                 if (!IsMultiRows)
                 {
-                    if (_previouslySelectedHeader != null && _previouslySelectedHeader.Rectangle.Left > headersWidth)
+                    if (selectedHeader != null && selectedHeader.Rectangle.Left > headersWidth)
                     {
-                        endRenderIndex = headers.IndexOf(_previouslySelectedHeader);
-                        var leftMax = _previouslySelectedHeader.Rectangle.Left + _previouslySelectedHeader.Rectangle.Width - headersWidth;
+                        endRenderIndex = headers.IndexOf(selectedHeader);
+                        var leftMax = selectedHeader.Rectangle.Left + selectedHeader.Rectangle.Width - headersWidth;
                         var right = headers.FirstOrDefault(x => x.Rectangle.Left + x.Rectangle.Width > leftMax);
                         startRenderIndex = headers.IndexOf(right) + 1;
                     }
@@ -260,16 +260,17 @@ namespace Ovotan.Windows.Controls
         /// <param name="item">The instance of header.</param>
         void _setActiveTab(TabHeader item)
         {
-            if (_previouslySelectedHeader != null)
+            if (SelectedHeader != null)
             {
-                _previouslySelectedHeader.IsActive = false;
-                _previouslySelectedHeader.IsSelected = false;
+                SelectedHeader.IsActive = false;
+                SelectedHeader.IsSelected = false;
             }
-            _previouslySelectedHeader = item;
-            _previouslySelectedHeader.IsActive = true;
-            _previouslySelectedHeader.IsSelected = true;
-            SelectedItemCommand?.Execute(_previouslySelectedHeader);
+            SelectedHeader = item;
+            SelectedHeader.IsActive = true;
+            SelectedHeader.IsSelected = true;
+            SelectedItemCommand?.Execute(SelectedHeader);
         }
+
 
         /// <summary>
         /// Handler for the mouse down click event.
@@ -304,12 +305,12 @@ namespace Ovotan.Windows.Controls
                 {
                     newActiveSiteHostTabControlItem = headers[headerIndex - 1];
                 }
-                _previouslySelectedHeader = newActiveSiteHostTabControlItem as TabHeader;
-                _previouslySelectedHeader.IsActive = true;
+                SelectedHeader = newActiveSiteHostTabControlItem as TabHeader;
+                SelectedHeader.IsActive = true;
             }
             if (item.IsActive)
-            {
-                SelectedItemCommand?.Execute(newActiveSiteHostTabControlItem);
+            {   
+                SelectedItemCommand?.Execute(SelectedHeader);
             }
             InvalidateMeasure();
         }

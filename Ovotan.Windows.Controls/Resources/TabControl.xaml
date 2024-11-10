@@ -3,7 +3,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style TargetType="{x:Type controls:TabHeader}">
-        <Setter Property="Focusable" Value="True"/>
         <Setter Property="Background" Value="#3B4F81"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="Foreground" Value="#F4F5FF"/>
