@@ -17,7 +17,12 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <controls:TabControl x:Name="MainTabControl" Grid.Row="1" Background="AliceBlue">
+        <Menu>
+            <MenuItem Header="werewrew">
+                <MenuItem Header="asdfsdfdsfds"/>
+            </MenuItem>
+        </Menu>
+        <controls:TabControl x:Name="MainTabControl" Grid.Row="1" Background="Blue">
         </controls:TabControl>
         <Button Content="Add" Grid.Row="2" Click="Button_Click"/>
 
