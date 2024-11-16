@@ -34,10 +34,13 @@ namespace Ovotan.Windows.Controls
         /// </summary>
         public SchemaManager()
         {
-            _callback = _mergeResource;
-            if(!Application.Current.Resources.MergedDictionaries.Contains(this))
+            if (Application.Current != null)
             {
-                Application.Current.Resources.MergedDictionaries.Add(this);
+                _callback = _mergeResource;
+                if (!Application.Current.Resources.MergedDictionaries.Contains(this))
+                {
+                    Application.Current.Resources.MergedDictionaries.Add(this);
+                }
             }
         }
 
@@ -63,6 +66,7 @@ namespace Ovotan.Windows.Controls
 
         public static void AddResource(string source)
         {
+            return;
             lock (_loadedSchemas)
             {
                 _callback(source, "");
