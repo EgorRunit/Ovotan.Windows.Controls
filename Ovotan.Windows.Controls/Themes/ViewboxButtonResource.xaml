@@ -1,7 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:controls="clr-namespace:Ovotan.Windows.Controls"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Style TargetType="{x:Type controls:ViewboxButton}">
+    <!--<Style TargetType="{x:Type controls:ViewboxButton}">
         <Style.Resources>
             <SolidColorBrush x:Key="BorderBrushMouseOver">#825D07</SolidColorBrush>
             <SolidColorBrush x:Key="BackgroundMouseOver">#FFEDC8</SolidColorBrush>
@@ -23,7 +23,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>-->
 
     <Viewbox x:Shared="false" x:Key="OVBT_Close" Width="16 " Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:System="clr-namespace:System;assembly=mscorlib">
         <Viewbox.Resources>

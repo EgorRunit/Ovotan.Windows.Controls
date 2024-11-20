@@ -33,7 +33,7 @@ namespace Ovotan.Windows.Controls
             BaseColorProperty = DependencyProperty.Register("BaseColor", typeof(SolidColorBrush), typeof(ViewboxIcon),
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, _fffF, null));
 
-            SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls;component/Resources/ViewboxButtonResource.xaml", "");
+            //SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls;component/Resources/ViewboxButtonResource.xaml", "");
         }
 
         static void _fffF(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -71,7 +71,9 @@ namespace Ovotan.Windows.Controls
         double _startOpacityValue;
         public override void OnApplyTemplate()
         {
-            if(Viewbox == null)
+            var ssss = Application.Current.Resources["OVBT_Close"];
+
+            if (Viewbox == null)
             {
                 throw new Exception("выбирите шаблона иконки");
             }

@@ -61,7 +61,7 @@ namespace Ovotan.Windows.Controls
             SelectedItemCommandProperty = DependencyProperty.Register("SelectedItemCommand", typeof(ICommand), typeof(TabHeaders),
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, null, null));
             
-            SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls;component/Resources/TabControl.xaml", "");
+            //SchemaManager.AddResource("pack://application:,,,/Ovotan.Windows.Controls;component/Resources/TabControl.xaml", "");
         }
 
         /// <summary>

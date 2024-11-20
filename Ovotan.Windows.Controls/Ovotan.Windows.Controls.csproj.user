@@ -2,10 +2,13 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
-    <Page Update="Resources\TabControl.xaml">
+    <Page Update="Themes\Blue\TabControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Resources\ViewboxButtonResource.xaml">
+    <Page Update="Themes\ViewboxButtonResource.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\Generic.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
