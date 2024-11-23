@@ -28,14 +28,35 @@ namespace Ovotan.Windows.Controls
                     {
                         yield return node as T;
                     }
-                    if (node is FrameworkElement)
+                    if (node is FrameworkElement frameworkElement)
                     {
-                        var ss = element.TemplatedParent;
-                        node = (node as FrameworkElement).Parent;
+                        var ss = frameworkElement.TemplatedParent;
+                        node = frameworkElement.Parent;
+                        //node = (node as FrameworkElement).Parent;
                     }
                 }
             }
         }
+        //public static IEnumerable<T> FindLogicalParent<T>(this FrameworkElement element) where T : class
+        //{
+        //    if (element != null)
+        //    {
+        //        object node = element;
+        //        while (node != null)
+        //        {
+        //            if (node is T)
+        //            {
+        //                yield return node as T;
+        //            }
+        //            if (node is FrameworkElement frameworkElement)
+        //            {
+        //                var ss = frameworkElement.TemplatedParent;
+        //                node = frameworkElement.Parent;
+        //                //node = (node as FrameworkElement).Parent;
+        //            }
+        //        }
+        //    }
+        //}
 
 
         public static IEnumerable<T> FindLogicalParentTag<T>(this FrameworkElement element) where T : class
